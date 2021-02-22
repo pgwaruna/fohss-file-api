@@ -47,7 +47,7 @@ class FileRequest extends FormRequest
             'file_name' => 'required|string|min:2|max:100',
             'channel_name' => 'required|string|min:2|max:50|exists:channels,channel_name',
             'file' => 'required|max:'.globalSetting('UPLOAD_MAX_SIZE').'',
-            'path_enable' => 'required|in:'.$this->enum->show.','.$this->enum->hide.'',
+            'path_enable' => 'required|in:'.$this->enum->active.','.$this->enum->inactive.'',
         ];
     }
 
