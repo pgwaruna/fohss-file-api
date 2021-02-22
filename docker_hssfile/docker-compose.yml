@@ -1,0 +1,106 @@
+version: '3'
+
+networks:
+  fileapi:
+    external:
+      name: fileapi
+
+services:
+  site:
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+    container_name: fileapi_nginx
+    ports:
+      - "8400:80"
+    volumes:
+      - ../site:/var/www/html:delegated
+    depends_on:
+      - fileapi_php
+      - fileapi_db
+    networks:
+      - fileapi
+
+  fileapi_db:
+    image: mysql:5.7.29
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: fileapi_db
+    volumes:
+      - ../mysql:/var/lib/mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3304:3306"
+    environment:
+      MYSQL_DATABASE:
+      MYSQL_USER:
+      MYSQL_PASSWORD:
+      MYSQL_ROOT_PASSWORD:
+      SERVICE_TAGS:
+      SERVICE_NAME:
+    networks:
+      - fileapi
+
+  fileapi_db_pma:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: fileapi_db_pma
+    depends_on:
+      - fileapi_db
+    ports:
+      - 8401:80
+    environment:
+      PMA_HOST:
+      PMA_ABSOLUTE_URI:
+    restart: always
+    networks:
+      - fileapi
+
+  fileapi_php:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: fileapi_php
+    volumes:
+      - ../site:/var/www/html:delegated
+    ports:
+      - "9004:9000"
+    networks:
+      - fileapi
+
+  fileapi_composer:
+    build:
+      context: .
+      dockerfile: composer.dockerfile
+    container_name: fileapi_composer
+    volumes:
+      - ../site:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - fileapi_php
+    user: fileapi
+    networks:
+      - fileapi
+    entrypoint: ['composer', '--ignore-platform-reqs']
+
+  fileapi_npm:
+    image: node:13.7
+    container_name: fileapi_npm
+    volumes:
+      - ../site:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: ['npm']
+
+  fileapi_artisan:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: fileapi_artisan
+    volumes:
+      - ../site:/var/www/html:delegated
+    depends_on:
+      - fileapi_db
+    working_dir: /var/www/html
+    user: fileapi
+    entrypoint: ['php', '/var/www/html/artisan']
+    networks:
+      - fileapi
