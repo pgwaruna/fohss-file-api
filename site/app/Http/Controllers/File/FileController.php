@@ -304,7 +304,7 @@ class FileController extends Controller implements FileInterface {
                 return $this->successResponse('file_view_ok',
                     [
                         'file_name' => $file->file_name,
-                        'file_apth' => $this->system_url.$file->file_path,
+                        'file_path' => $this->system_url.$file->file_path,
                         'filetype_id' => $file->filetype_id,
                         'created_at' => $file->created_at
                     ]
