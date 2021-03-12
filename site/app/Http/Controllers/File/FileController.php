@@ -114,8 +114,13 @@ class FileController extends Controller implements FileInterface {
             // Store the file data to the table
             $newFile = new File();
 
+            $extension = $request->file('file')->extension();
+            if (!$extension) {
+                throw new Exception("file_extension_error");
+            }
+
             // Generate custom file name using file id with salt
-            $customFileName = md5($request->file_name.$this->salt).'.'. $request->file->getClientOriginalExtension();
+            $customFileName = md5($request->file_name.$this->salt).'.'. $extension;
 
             // Get the mime type of the file and check exists in file types which is already supported to this type of a file
             $fileMimeExist = FileType::where('mime_type', '=', $request->file->getMimeType())->first('id');
