@@ -18,9 +18,7 @@ class AuthenticateAccess extends Middleware
      */
     public function handle($request, Closure $next)
     {
-//        $allowedSecrets = explode(',', config::get("secrets.secret_keys",null));
-
-        $allowedSecrets = explode(',', globalSetting('ALLOWED_SECRETS'),false);
+        $allowedSecrets = explode(',', config::get("secrets.secret_keys",null));
 
         if(in_array($request->header('Authorization'), $allowedSecrets)) {
             return $next($request);
