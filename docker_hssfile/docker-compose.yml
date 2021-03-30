@@ -18,6 +18,7 @@ services:
     depends_on:
       - fileapi_php
       - fileapi_db
+    restart: always
     networks:
       - fileapi
 
@@ -27,7 +28,7 @@ services:
     container_name: fileapi_db
     volumes:
       - ../mysql:/var/lib/mysql
-    restart: unless-stopped
+    restart: always
     tty: true
     ports:
       - "3304:3306"
@@ -64,6 +65,7 @@ services:
       - ../site:/var/www/html:delegated
     ports:
       - "9004:9000"
+    restart: always
     networks:
       - fileapi
 
