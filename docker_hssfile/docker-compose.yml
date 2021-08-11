@@ -1,9 +1,9 @@
 version: '3'
 
 networks:
-  fileapi:
+  fohssweb_net:
     external:
-      name: fileapi
+      name: fohssweb_net
 
 services:
   site:
@@ -20,7 +20,7 @@ services:
       - fileapi_db
     restart: always
     networks:
-      - fileapi
+      - fohssweb_net
 
   fileapi_db:
     image: mysql:5.7.29
@@ -40,7 +40,7 @@ services:
       SERVICE_TAGS:
       SERVICE_NAME:
     networks:
-      - fileapi
+      - fohssweb_net
 
   fileapi_db_pma:
     image: phpmyadmin/phpmyadmin:latest
@@ -54,7 +54,7 @@ services:
       PMA_ABSOLUTE_URI:
     restart: always
     networks:
-      - fileapi
+      - fohssweb_net
 
   fileapi_php:
     build:
@@ -67,7 +67,7 @@ services:
       - "9004:9000"
     restart: always
     networks:
-      - fileapi
+      - fohssweb_net
 
   fileapi_composer:
     build:
@@ -81,7 +81,7 @@ services:
       - fileapi_php
     user: fileapi
     networks:
-      - fileapi
+      - fohssweb_net
     entrypoint: ['composer', '--ignore-platform-reqs']
 
   fileapi_npm:
@@ -105,4 +105,4 @@ services:
     user: fileapi
     entrypoint: ['php', '/var/www/html/artisan']
     networks:
-      - fileapi
+      - fohssweb_net
