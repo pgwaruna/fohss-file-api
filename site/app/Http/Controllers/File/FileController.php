@@ -119,10 +119,8 @@ class FileController extends Controller implements FileInterface {
                 throw new Exception("file_extension_error");
             }
 
-            dd($request->encrypt_name);
-            
             if ($request->has('encrypt_name')) {
-                if($request->encrypt_name === 1){
+                if($request->encrypt_name == 1){
                     // Generate custom file name using file id with salt
                     $customFileName = md5($request->file_name.$this->salt).'.'. $extension;
                 } else {
