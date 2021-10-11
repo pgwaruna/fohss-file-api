@@ -119,8 +119,16 @@ class FileController extends Controller implements FileInterface {
                 throw new Exception("file_extension_error");
             }
 
-            // Generate custom file name using file id with salt
-            $customFileName = md5($request->file_name.$this->salt).'.'. $extension;
+            if ($request->has('encrypt_name')) {
+                if($request->encrypt_name === 1){
+                    // Generate custom file name using file id with salt
+                    $customFileName = md5($request->file_name.$this->salt).'.'. $extension;
+                } else {
+                    $customFileName = $request->file_name.'.'. $extension;
+                }
+            } else {
+                $customFileName = $request->file_name.'.'. $extension;
+            }
 
             // Get the mime type of the file and check exists in file types which is already supported to this type of a file
             $fileMimeExist = FileType::where('mime_type', '=', $request->file->getMimeType())->first('id');
