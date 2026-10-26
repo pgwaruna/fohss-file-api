@@ -41,7 +41,7 @@ class FileController extends Controller implements FileInterface {
     public function __construct() {
         $this->enum = new EnumService();
 
-        // need to create symlink to store files reading
+        // need to create symlink to store files reading..
         // docker-compose run --rm fileapi_artisan storage:link, so file canbe access with public_url/storage/file
 
         $url = globalSetting('SYSTEM_URL');
